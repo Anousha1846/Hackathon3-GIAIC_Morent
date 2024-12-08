@@ -109,8 +109,8 @@ const DetailHero = () => {
 
           {/* Description */}
           <p className="my-6 text-[16px] sm:text-[18px] lg:text-[20px] text-[#596780] leading-[1.6]">
-            NISMO has become the embodiment of Nissan"s outstanding performance, inspired by the most unforgiving proving
-            ground, the "race track".
+            NISMO has become the embodiment of Nissans outstanding performance, inspired by the most unforgiving proving
+            ground, the race track.
           </p>
 
           {/* Specifications */}
