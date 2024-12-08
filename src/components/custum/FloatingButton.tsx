@@ -46,11 +46,11 @@ const FloatingButton: React.FC = () => {
         onMouseLeave={stopDrag} // Stop drag if mouse leaves button
         style={{
           padding: "15px 20px",
-          backgroundColor: "#3563E9",
-          color: "white",
+          color: "#3563E9",
+          backgroundColor: "white",
           borderRadius: "50%",
           border: "none",
-          boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+          // boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
           cursor: "pointer",
           position: "relative",
           zIndex: 1000,

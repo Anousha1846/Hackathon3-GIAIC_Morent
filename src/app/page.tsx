@@ -8,7 +8,6 @@ import RecommendedCar from "@/components/custum/RecommendedCar";
 export default function Home() {
   return (
    <main className="bg-[#F6F7F9]">
-    <FloatingButton/>
     <Hero/>
     <Location/>
     <PopularCar/>

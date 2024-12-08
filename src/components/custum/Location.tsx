@@ -5,7 +5,7 @@ export default function Location() {
   return (
     <main className="flex flex-col lg:flex-row lg:gap-24 md:gap-16  font-PlusJakartaSans w-full items-center justify-center lg:px-24 mt-8 relative">
       {/* Pick-Up Section */}
-      <div className="max-w-[486px] max-h-[132px] p-4 px-12 border rounded-md shadow-lg bg-white z-10">
+      <div className="max-w-[486px] max-h-[132px] p-4 md:px-12 border rounded-md shadow-lg bg-white z-10">
         {/* Option */}
         <div className="flex items-center mb-4">
           <input
@@ -81,11 +81,11 @@ export default function Location() {
 
       {/* Switch Button */}
       <div className="absolute left-1/2 top-[50%] transform -translate-x-1/2 -translate-y-1/2 z-30">
-        <Image src={Switch} alt="switch" className="w-36 h-32 " />
+        <Image src={Switch} alt="switch" className="w-24 h-20 " />
       </div>
 
       {/* Drop-Off Section */}
-      <div className="max-w-[486px] max-h-[132px] p-4 px-12 border rounded-md shadow-lg bg-white z-10 mt-6 lg:mt-0">
+      <div className="max-w-[486px] max-h-[132px] p-4 md:px-12 border rounded-md shadow-lg bg-white z-10 mt-6 lg:mt-0">
         {/* Option */}
         <div className="flex items-center mb-4">
           <input
