@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Morent Hackathon Website
+🚀 A visually stunning and user-centric web application developed during a hackathon. This project demonstrates advanced UI/UX design principles, focusing on creating an intuitive, modern, and responsive user interface.
 
-## Getting Started
+🚩 Key Features:
+🌟 Modern Design: Sleek and cohesive UI/UX with attention to usability and accessibility.
+📱 Fully Responsive: Optimized for all devices to ensure seamless user experience.
+⚡ Performance-Driven: Leveraging cutting-edge tools and frameworks for fast and scalable performance.
+💻 Tech Stack
+Next.js: React-based framework for server-side rendering and static site generation.
+Tailwind CSS: Utility-first CSS framework for rapid styling.
+DaisyUI: Tailwind plugin for beautiful component styling.
+ShadCN: A collection of high-quality components for React applications.
+Acentity: For enhanced animations and interactivity.
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+📂 Folder Structure
+csharp
+Copy code
+📦 morent-hackathon  
+├── 📁 public          # Static assets  
+├── 📁 src             # Source code  
+│   ├── 📁 components  # Reusable UI components  
+│   ├── 📁 pages       # Next.js pages  
+│   ├── 📁 styles      # Global styles  
+│   └── 📁 utils       # Utility functions  
+└── README.md          # Project documentation  
+🚀 Getting Started
+Follow these steps to run the project locally:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Clone the Repository
+bash
+Copy code
+git clone https://github.com/yourusername/morent-hackathon.git  
+cd morent-hackathon  
+2. Install Dependencies
+bash
+Copy code
+npm install  
+3. Start the Development Server
+bash
+Copy code
+npm run dev  
+Open http://localhost:3000 in your browser to view the project.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Here’s a professional and interactive README.md file tailored for your UI/UX Hackathon - Morent Website project:
 
-## Learn More
+Morent Hackathon Website
+🚀 A visually stunning and user-centric web application developed during a hackathon. This project demonstrates advanced UI/UX design principles, focusing on creating an intuitive, modern, and responsive user interface.
 
-To learn more about Next.js, take a look at the following resources:
+🚩 Key Features
+🌟 Modern Design: Sleek and cohesive UI/UX with attention to usability and accessibility.
+📱 Fully Responsive: Optimized for all devices to ensure seamless user experience.
+⚡ Performance-Driven: Leveraging cutting-edge tools and frameworks for fast and scalable performance.
+💻 Tech Stack
+Next.js: React-based framework for server-side rendering and static site generation.
+Tailwind CSS: Utility-first CSS framework for rapid styling.
+DaisyUI: Tailwind plugin for beautiful component styling.
+ShadCN: A collection of high-quality components for React applications.
+Acentity: For enhanced animations and interactivity.
+📸 Screenshots
+(Include relevant screenshots here to showcase the design and functionality of your project.)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+📂 Folder Structure
+csharp
+Copy code
+📦 morent-hackathon  
+├── 📁 public          # Static assets  
+├── 📁 src             # Source code  
+│   ├── 📁 components  # Reusable UI components  
+│   ├── 📁 pages       # Next.js pages  
+│   ├── 📁 styles      # Global styles  
+│   └── 📁 utils       # Utility functions  
+└── README.md          # Project documentation  
+🚀 Getting Started
+Follow these steps to run the project locally:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. Clone the Repository
+bash
+Copy code
+git clone https://github.com/yourusername/morent-hackathon.git  
+cd morent-hackathon  
+2. Install Dependencies
+bash
+Copy code
+npm install  
+3. Start the Development Server
+bash
+Copy code
+npm run dev  
+Open http://localhost:3000 in your browser to view the project.
 
-## Deploy on Vercel
+🤝 Contribution
+Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+📜 License
+This project is licensed under the MIT License.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+🎯 Acknowledgements
+Special thanks to the GIAIC Faculty and the amazing developers behind the tools used in this project.
+
