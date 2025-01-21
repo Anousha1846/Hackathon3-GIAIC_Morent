@@ -1,13 +1,15 @@
+"use client";
+import React, { Suspense } from "react";
 import BillingInfo from "@/components/custum/BillingInfo";
-import { div } from "framer-motion/client";
-import React from "react";
 
-const page = () => {
+const Page = () => {
   return (
-    <div >
-        <BillingInfo/>
+    <div>
+      <Suspense fallback={<div>Loading billing information...</div>}>
+        <BillingInfo />
+      </Suspense>
     </div>
   );
 };
 
-export default page;
+export default Page;

@@ -3,7 +3,7 @@ import Switch from "../../../public/Switch.png";
 
 export default function Location() {
   return (
-    <main className="flex flex-col lg:flex-row lg:gap-24 md:gap-16  font-PlusJakartaSans w-full items-center justify-center lg:px-24 mt-8 relative">
+    <main className="flex flex-col px-2 lg:flex-row lg:gap-24 md:gap-16  font-PlusJakartaSans w-full items-center justify-center lg:px-24 mt-8 relative">
       {/* Pick-Up Section */}
       <div className="max-w-[486px] max-h-[132px] p-4 md:px-12 border rounded-md shadow-lg bg-white z-10">
         {/* Option */}

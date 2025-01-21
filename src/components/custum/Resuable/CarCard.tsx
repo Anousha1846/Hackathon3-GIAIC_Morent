@@ -1,50 +1,48 @@
-"use client";
 import React, { useState } from "react";
 import Image, { StaticImageData } from "next/image";
+import { useWishlist } from "@/contexts/WishlistContext"; // Ensure correct path to context
 import CC1 from "../../../../public/CC1.png";
 import CC2 from "../../../../public/CC2.png";
 import CC3 from "../../../../public/CC3.png";
-import { useRouter } from "next/navigation";
 
 type CarCardProps = {
   car: {
     name: string;
     type: string;
-    image: StaticImageData;
-    fuelCapacity: string;
+    image: StaticImageData | string;
+    fuelCapacity: string | number;
     transmission: string;
-    capacity: string;
-    price: number;
+    seatingCapacity: string | number;
+    pricePerDay: number | string;
     originalPrice?: number;
   };
   heartColor?: "red" | "white";
-  onRentNow?: () => void; // Pass a function for dynamic routing or action
+  onRentNow?: () => void;
 };
 
 const CarCard: React.FC<CarCardProps> = ({ car, heartColor = "white", onRentNow }) => {
   const [isHeartRed, setIsHeartRed] = useState(heartColor === "red");
-  const router = useRouter();
+  const { toggleWishlist } = useWishlist(); // Use the toggleWishlist function from context
 
-  const toggleHeartColor = () => {
-    setIsHeartRed((prev) => !prev);
+  const handleHeartClick = () => {
+    toggleWishlist(car); // Add or remove from the wishlist
+    setIsHeartRed((prev) => !prev); // Toggle the heart color
   };
 
   const handleRentNow = () => {
     if (onRentNow) {
-      onRentNow(); // Call the passed function
-    } else {
-      router.push("/default-route"); // Fallback if no function is passed
+      onRentNow();
     }
   };
 
   return (
-    <div className="hover:border rounded-sm shadow-sm p-4 w-[90%] h-[368px] mx-auto bg-white">
+    <div className="hover:border rounded-sm shadow-sm p-4 sm:w-[96%] w-full h-[364px] mx-auto bg-white">
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-[20px] leading-[30px] font-bold">{car.name}</h3>
-          <p className="text-sm leading-[21px] text-[#90A3BF]">{car.type}</p>
+          <p className="text-sm leading-[21px] font-bold text-[#90A3BF]">{car.type}</p>
         </div>
-        <button onClick={toggleHeartColor} className="text-gray-400 hover:text-[#3563E9]">
+        <button onClick={handleHeartClick} className="text-gray-400 hover:text-[#3563E9]">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill={isHeartRed ? "red" : "white"}
@@ -68,30 +66,31 @@ const CarCard: React.FC<CarCardProps> = ({ car, heartColor = "white", onRentNow 
         width={212}
         height={72}
         objectFit="contain"
+        loading="lazy"
       />
-      <div className="flex justify-between text-sm text-[#90A3BF] gap-[6px]">
+      <div className="flex justify-between text-sm text-[#90A3BF] gap-[3px]">
         <div className="flex items-center gap-1">
-          <Image src={CC1} alt="img" />
+          <Image src={CC1} alt="Fuel Capacity" width={16} height={16} />
           {car.fuelCapacity}
         </div>
         <div className="flex items-center gap-1">
-          <Image src={CC2} alt="img" />
+          <Image src={CC2} alt="Transmission" width={16} height={16} />
           {car.transmission}
         </div>
         <div className="flex items-center gap-1">
-          <Image src={CC3} alt="img" />
-          {car.capacity}
+          <Image src={CC3} alt="Seating Capacity" width={16} height={16} />
+          {car.seatingCapacity}
         </div>
       </div>
       <div className="mt-9">
         <div className="flex justify-between">
           <div>
             <p className="text-lg font-bold flex flex-col text-[#1A202C]">
-              ${car.price}.00/day
+              {car.pricePerDay}
             </p>
             {car.originalPrice && (
               <p className="text-[#1A202C] line-through text-sm">
-                ${car.originalPrice}.00
+                {car.originalPrice}
               </p>
             )}
           </div>

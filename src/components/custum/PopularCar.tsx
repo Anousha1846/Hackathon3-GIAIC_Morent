@@ -1,85 +1,75 @@
 "use client";
-import React from "react";
-import { useRouter } from "next/navigation"; // Import useRouter
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import CarCard from "../custum/Resuable/CarCard";
-import p1 from "../../../public/p1.png";
-import p2 from "../../../public/p2.png";
-import p3 from "../../../public/p3.png";
-import p4 from "../../../public/p4.png";
+import Link from "next/link";
+import { client } from "@/sanity/lib/client";
 
-const PopularCar: React.FC = () => {
-  const router = useRouter(); // Initialize useRouter
+interface Car {
+  _id: string;
+  name: string;
+  type: string;
+  image: string;
+  fuelCapacity: number;
+  transmission: string;
+  seatingCapacity: number;
+  pricePerDay: number | string;
+  originalPrice?: number;
+}
 
-  const cars = [
-    {
-      name: "Koenigsegg",
-      type: "Sport",
-      image: p1,
-      fuelCapacity: "90L",
-      transmission: "Manual",
-      capacity: "2 People",
-      price: 99,
-    },
-    {
-      name: "Nissan GT - R",
-      type: "Sport",
-      image: p2,
-      fuelCapacity: "80L",
-      transmission: "Manual",
-      capacity: "2 People",
-      price: 80,
-      originalPrice: 100,
-    },
-    {
-      name: "Rolls - Royce",
-      type: "Sedan",
-      image: p3,
-      fuelCapacity: "70L",
-      transmission: "Manual",
-      capacity: "4 People",
-      price: 96,
-    },
-    {
-      name: "Nissan GT - R",
-      type: "Sport",
-      image: p4,
-      fuelCapacity: "80L",
-      transmission: "Manual",
-      capacity: "2 People",
-      price: 80,
-      originalPrice: 100,
-    },
-  ];
+const RecommendedCar: React.FC = () => {
+  const [cars, setCars] = useState<Car[]>([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchCars = async () => {
+      const query = `*[_type == "car" && "popular" in tags]{
+        _id,
+        name,
+        type,
+        seatingCapacity,
+        fuelCapacity,
+        transmission,
+        pricePerDay,
+        originalPrice,
+        "image": image.asset->url,
+      }`;
+
+      try {
+        const data: Car[] = await client.fetch(query);
+        setCars(data || []);
+      } catch (error) {
+        console.error("Failed to fetch car data:", error);
+      }
+    };
+
+    fetchCars();
+  }, []);
 
   return (
     <div>
       <section className="lg:px-24 px-3 grid md:grid-cols-2 py-8">
-        {/* heading */}
-        <div className="">
-          <h1 className="p-2 rounded-sm text-[16px] text-[#90A3BF] font-medium">
-            Popular Cars
-          </h1>
+        <div>
+          <h1 className="p-2 rounded-sm text-[16px] text-[#90A3BF] font-medium">Popular Car</h1>
         </div>
-        {/* button */}
-        <button className="rounded-sm text-[16px] text-[#3563E9] flex justify-end">
-          View All
-        </button>
       </section>
 
       <div className="lg:px-24 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 justify-between">
-        {/* cars */}
-        {cars.map((car, index) => (
+        {cars.map((car) => (
           <CarCard
-            key={index}
+            key={car._id}
             car={car}
             onRentNow={() => {
-              router.push("/detailCartRent"); // Use router.push to navigate
-            }}
-          />
+              router.push(`/detailCartRent/${car._id}`);
+            }}   
+                   />
         ))}
       </div>
+
+
+
     </div>
   );
 };
 
-export default PopularCar;
+export default RecommendedCar;

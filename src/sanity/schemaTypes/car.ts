@@ -1,0 +1,88 @@
+export  const car = {
+    name: "carsDocument",
+    type: "document",
+    title: "Cars Document",
+    fields: [
+      {
+        name: "car1",
+        type: "object",
+        title: "Car 1",
+        fields: [
+          { name: "name", type: "string", title: "Car Name" },
+          { name: "type", type: "string", title: "Car Type" },
+          { name: "image", type: "image", title: "Car Image" },
+          { name: "fuelCapacity", type: "string", title: "Fuel Capacity" },
+          { name: "transmission", type: "string", title: "Transmission" },
+          { name: "seatingCapacity", type: "string", title: "Seating Capacity" },
+          { name: "pricePerDay", type: "string", title: "Price Per Day" },
+          {
+            name: "originalPrice",
+            type: "number",
+            title: "Original Price",
+            optional: true,
+          },
+        ],
+      },
+      {
+        name: "car2",
+        type: "object",
+        title: "Car 2",
+        fields: [
+          { name: "name", type: "string", title: "Car Name" },
+          { name: "type", type: "string", title: "Car Type" },
+          { name: "image", type: "image", title: "Car Image" },
+          { name: "fuelCapacity", type: "string", title: "Fuel Capacity" },
+          { name: "transmission", type: "string", title: "Transmission" },
+          { name: "seatingCapacity", type: "string", title: "Seating Capacity" },
+          { name: "pricePerDay", type: "string", title: "Price Per Day" },
+          {
+            name: "originalPrice",
+            type: "number",
+            title: "Original Price",
+            optional: true,
+          },
+        ],
+      },
+      {
+        name: "car3",
+        type: "object",
+        title: "Car 3",
+        fields: [
+          { name: "name", type: "string", title: "Car Name" },
+          { name: "type", type: "string", title: "Car Type" },
+          { name: "image", type: "image", title: "Car Image" },
+          { name: "fuelCapacity", type: "string", title: "Fuel Capacity" },
+          { name: "transmission", type: "string", title: "Transmission" },
+          { name: "seatingCapacity", type: "string", title: "Seating Capacity" },
+          { name: "pricePerDay", type: "string", title: "Price Per Day" },
+          {
+            name: "originalPrice",
+            type: "number",
+            title: "Original Price",
+            optional: true,
+          },
+        ],
+      },
+      {
+        name: "car4",
+        type: "object",
+        title: "Car 4",
+        fields: [
+          { name: "name", type: "string", title: "Car Name" },
+          { name: "type", type: "string", title: "Car Type" },
+          { name: "image", type: "image", title: "Car Image" },
+          { name: "fuelCapacity", type: "string", title: "Fuel Capacity" },
+          { name: "transmission", type: "string", title: "Transmission" },
+          { name: "seatingCapacity", type: "string", title: "Seating Capacity" },
+          { name: "pricePerDay", type: "string", title: "Price Per Day" },
+          {
+            name: "originalPrice",
+            type: "number",
+            title: "Original Price",
+            optional: true,
+          },
+        ],
+      },
+    ],
+  };
+  

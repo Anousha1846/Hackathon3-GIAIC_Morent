@@ -1,448 +1,584 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import Visa from "../../../public/Visa.png";
-import Bitcoin from "../../../public/Bitcoin.png";
-import PayPal from "../../../public/PayPal.png";
-import formicon from   "../../../public/formIcon.png"
-import formSummary from   "../../../public/formSummary.png"
-import Link from "next/link";
+import SuccessModal from "./Resuable/SuccessMsg";
 
 const BillingInfo = () => {
+  const searchParams = useSearchParams();
+  const [carDetails, setCarDetails] = useState({
+    name: "",
+    price: "",
+    image: "",
+  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    phoneNumber: "",
+    town: "",
+    city: "",
+    pickupLocation: "",
+    pickupDate: "",
+    pickupTime: "",
+    dropoffLocation: "",
+    dropoffDate: "",
+    dropoffTime: "",
+    cardName: "",
+    cardHolder: "",
+    expirationDate: "",
+    cvc: "",
+    marketingEmails: false,
+    termsAgreed: false,
+  });
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [currentStep, setCurrentStep] = useState(1); // Track current step
+
+  // Fetch car details from URL query parameters
+  useEffect(() => {
+    const name = searchParams.get("name");
+    const price = searchParams.get("price");
+    const image = searchParams.get("image");
+
+    if (name && price && image) {
+      setCarDetails({ name, price, image });
+    }
+  }, [searchParams]);
+
+  // Handle input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+    });
+  };
+
+  // Handle payment method selection
+  const handlePaymentMethodChange = (method: string) => {
+    setPaymentMethod(method);
+  };
+
+  // Validate form fields for the current step
+  const validateStep = (step: number) => {
+    switch (step) {
+      case 1: // Billing Info
+        const { name, phoneNumber, town, city } = formData;
+        const nameRegex = /^[A-Za-z\s]+$/;
+        const phoneRegex = /^\d{11}$/;
+
+        if (!nameRegex.test(name)) {
+          alert("Please enter a valid name (only alphabets and spaces).");
+          return false;
+        }
+        if (!phoneRegex.test(phoneNumber)) {
+          alert("Please enter a valid 11-digit phone number.");
+          return false;
+        }
+        if (!town || !city) {
+          alert("Please enter town and city name.");
+          return false;
+        }
+        return true;
+
+        case 2: // Rental Info
+        const { pickupLocation, pickupDate, pickupTime, dropoffLocation, dropoffDate, dropoffTime } = formData;
+      
+        if (!pickupLocation || !pickupDate || !pickupTime || !dropoffLocation || !dropoffDate || !dropoffTime) {
+          alert("Please fill all rental information fields.");
+          return false;
+        }
+      
+        // Additional validation for date and time (if needed)
+        const currentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+        if (pickupDate < currentDate) {
+          alert("Pick-up date cannot be in the past.");
+          return false;
+        }
+        if (dropoffDate < pickupDate) {
+          alert("Drop-off date cannot be before the pick-up date.");
+          return false;
+        }
+      
+        return true;
+
+      case 3: // Payment Method
+        if (!paymentMethod) {
+          alert("Please select a payment method.");
+          return false;
+        }
+        if (paymentMethod === "creditCard") {
+          const { cardName, cardHolder, expirationDate, cvc } = formData;
+          const cardNameRegex = /^[A-Za-z\s]+$/;
+          const expirationDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+          const cvcRegex = /^\d{3,4}$/;
+
+          if (!cardNameRegex.test(cardName)) {
+            alert("Please enter a valid card name.");
+            return false;
+          }
+          if (!cardNameRegex.test(cardHolder)) {
+            alert("Please enter a valid card holder name.");
+            return false;
+          }
+          if (!expirationDateRegex.test(expirationDate)) {
+            alert("Please enter a valid expiration date (MM/YY).");
+            return false;
+          }
+          if (!cvcRegex.test(cvc)) {
+            alert("Please enter a valid CVC (3 or 4 digits).");
+            return false;
+          }
+        }
+        return true;
+
+      case 4: // Confirmation
+        if (!formData.termsAgreed) {
+          alert("Please agree to the terms and conditions.");
+          return false;
+        }
+        return true;
+
+      default:
+        return false;
+    }
+  };
+
+  // Handle next step
+  const handleNext = () => {
+    if (validateStep(currentStep)) {
+      setCurrentStep((prev) => prev + 1);
+    }
+  };
+
+  // Handle previous step
+  const handlePrevious = () => {
+    setCurrentStep((prev) => prev - 1);
+  };
+
+  // Handle form submission
+  const handleCheckout = () => {
+    if (validateStep(currentStep)) {
+      setIsModalOpen(true); // Show the success modal
+      console.log("Form Data:", { ...formData, paymentMethod, carDetails }); // Log all data
+    }
+  };
+
   return (
-    <div>
-      <div className="bg-[#F6F7F9] flex md:flex-row flex-col-reverse gap-7 lg:px-16 px-2 py-8 ">
-        {/* side1 */}
-        <main className="flex flex-col gap-4 ">
-          {/* step 1  */}
-          <section className=" p-8 lg:px-16 lg:w-[854px] w-full min-h-[336px] bg-white rounded-md  ">
-            {/* heading */}
-            <div className="flex justify-between ">
+    <div className="bg-[#F6F7F9] flex md:flex-row flex-col-reverse gap-7 lg:px-16 px-2 py-8">
+      {/* Side 1: Form */}
+      <main className="flex flex-col gap-4">
+        {/* Step 1: Billing Info */}
+        {currentStep === 1 && (
+          <section className="p-8 lg:px-16 lg:w-[854px] w-full min-h-[336px] bg-white rounded-md">
+            <div className="flex justify-between">
               <div className="flex flex-col">
-                <h1 className="font-bold text-[20px] font-PlusJakartaSans text-[#1A202C] ">
-                  Billing Info
-                </h1>
-                <p className="text-[14px] text-[#90A3BF] ">
-                  Please enter your billing info
-                </p>
+                <h1 className="font-bold text-[20px] font-PlusJakartaSans text-blue-700">Billing Info</h1>
+                <p className="text-[14px] text-[#90A3BF]">Please enter your billing info</p>
               </div>
-              <button className=" text-[#90A3BF]  px-2 py-4 rounded-sm text-[14px]">
-                {" "}
-                Step 1 of 4
+              <button className="text-[#90A3BF] px-2 py-4 rounded-sm text-[14px]">Step 1 of 4</button>
+            </div>
+            <form>
+              <div className="grid sm:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <label className="block text-[#1A202C] font-medium mb-1">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#F5F5F5] rounded-sm focus:outline-none focus:ring placeholder:text-[12px] px-6 py-2"
+                    placeholder="Name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#1A202C] font-medium mb-1">Phone Number</label>
+                  <input
+                    type="text"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#F5F5F5] rounded-sm placeholder:text-[12px] px-3 py-2"
+                    placeholder="Phone Number"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#1A202C] font-medium mb-1">Town</label>
+                  <input
+                    type="text"
+                    name="town"
+                    value={formData.town}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#F5F5F5] rounded-sm placeholder:text-[12px] px-3 py-2"
+                    placeholder="Town"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#1A202C] font-medium mb-1">City</label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    className="w-full bg-[#F5F5F5] rounded-sm placeholder:text-[12px] px-3 py-2"
+                    placeholder="City"
+                  />
+                </div>
+              </div>
+            </form>
+            <div className="flex justify-between mt-6">
+              <button
+                onClick={handlePrevious}
+                disabled={currentStep === 1}
+                className="bg-gray-300 hover:bg-blue-700 hover:text-black text-gray-700 px-4 py-2 rounded-md disabled:opacity-50 "
+              >
+                Previous
+              </button>
+              <button
+                onClick={handleNext}
+                className="bg-[#3563E9] text-white px-4 py-2 rounded-md"
+              >
+                Next
               </button>
             </div>
-            {/* form */}
-            <section className="text-[14px] pt-4 ">
-              <div className="max-w-3xl mx-auto ">
-                <form>
-                  {/* First Name and Last Name */}
+          </section>
+        )}
+
+        {/* Step 2: Rental Info */}
+        {currentStep === 2 && (
+          <section className="bg-white lg:px-16 p-8 lg:w-[854px] w-full min-h-[336px] rounded-md">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-blue-700">Rental Info</h2>
+              <p className="text-sm text-gray-500">Please select your rental date</p>
+              <p className="text-right text-sm text-gray-400 font-medium">Step 2 of 4</p>
+            </div>
+            <form>
+          {/* Pick-Up Section */}
+<div className="mb-8">
+  <div className="flex items-center gap-2 mb-4">
+    <input
+      type="radio"
+      id="pick-up"
+      name="rentalType"
+      defaultChecked
+      className="text-[#3563E9] focus:ring-[#3563E9]"
+    />
+    <label htmlFor="pick-up" className="text-gray-900 font-medium">
+      Pick - Up
+    </label>
+  </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {/* Location */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+      <input
+        type="text"
+        name="pickupLocation"
+        value={formData.pickupLocation}
+        onChange={handleInputChange}
+        className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
+        placeholder="Enter your location"
+      />
+    </div>
+    {/* Date */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+      <input
+        type="date"
+        name="pickupDate"
+        value={formData.pickupDate}
+        onChange={handleInputChange}
+        className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
+      />
+    </div>
+    {/* Time */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
+      <input
+        type="time"
+        name="pickupTime"
+        value={formData.pickupTime}
+        onChange={handleInputChange}
+        className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
+      />
+    </div>
+  </div>
+</div>
+
+{/* Drop-Off Section */}
+<div>
+  <div className="flex items-center gap-2 mb-4">
+    <input
+      type="radio"
+      id="drop-off"
+      name="rentalType"
+      className="text-[#3563E9] focus:ring-[#3563E9]"
+    />
+    <label htmlFor="drop-off" className="text-gray-900 font-medium">
+      Drop - Off
+    </label>
+  </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {/* Location */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+      <input
+        type="text"
+        name="dropoffLocation"
+        value={formData.dropoffLocation}
+        onChange={handleInputChange}
+        className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
+        placeholder="Enter your location"
+      />
+    </div>
+    {/* Date */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+      <input
+        type="date"
+        name="dropoffDate"
+        value={formData.dropoffDate}
+        onChange={handleInputChange}
+        className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
+      />
+    </div>
+    {/* Time */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
+      <input
+        type="time"
+        name="dropoffTime"
+        value={formData.dropoffTime}
+        onChange={handleInputChange}
+        className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
+      />
+    </div>
+  </div>
+</div>
+            </form>
+            <div className="flex justify-between mt-6">
+              <button
+                onClick={handlePrevious}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md"
+              >
+                Previous
+              </button>
+              <button
+                onClick={handleNext}
+                className="bg-[#3563E9] text-white px-4 py-2 rounded-md"
+              >
+                Next
+              </button>
+            </div>
+          </section>
+        )}
+
+        {/* Step 3: Payment Method */}
+        {currentStep === 3 && (
+          <section className="p-8 lg:px-16 lg:w-[854px] w-full min-h-[336px] bg-white">
+            <div className="flex justify-between">
+              <div className="flex flex-col">
+                <h1 className="font-bold text-[20px] font-PlusJakartaSans text-[#1A202C]">Payment Method</h1>
+                <p className="text-[14px] text-[#90A3BF]">Please enter your Payment Method</p>
+              </div>
+              <button className="text-[#90A3BF] px-2 py-4 rounded-sm text-[14px]">Step 3 of 4</button>
+            </div>
+            <form>
+              <div className="bg-[#F6F7F9] rounded-md p-3">
+                {/* Credit Card */}
+                <div className="flex justify-between">
+                  <span className="text-[#1A202C] font-semibold text-[17px] mb-5">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="creditCard"
+                      checked={paymentMethod === "creditCard"}
+                      onChange={() => handlePaymentMethodChange("creditCard")}
+                    />{" "}
+                    Credit Card
+                  </span>
+                  <span>
+                    <Image src="/Visa.png" alt="Visa" width={50} height={30} />
+                  </span>
+                </div>
+                {paymentMethod === "creditCard" && (
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[#1A202C] font-medium mb-1">
-                        Name
-                      </label>
+                      <label className="block text-[#1A202C] font-medium mb-1">Card Name</label>
                       <input
                         type="text"
-                        className="w-full bg-[#F5F5F5] rounded-sm focus:outline-none focus:ring placeholder:text-[12px] px-6 py-2"
-                        placeholder="Name"
+                        name="cardName"
+                        value={formData.cardName}
+                        onChange={handleInputChange}
+                        className="w-full bg-white rounded-sm focus:outline-none focus:ring placeholder:text-[12px] px-6 py-2"
+                        placeholder="Card Name"
                       />
                     </div>
                     <div>
-                      <label className="block text-[#1A202C] font-medium mb-1">
-                        Phone Number
-                      </label>
+                      <label className="block text-[#1A202C] font-medium mb-1">Card Holder</label>
                       <input
                         type="text"
-                        className="w-full bg-[#F5F5F5] rounded-sm placeholder:text-[12px]   px-3 py-2"
-                        placeholder="Phone Number"
+                        name="cardHolder"
+                        value={formData.cardHolder}
+                        onChange={handleInputChange}
+                        className="w-full bg-white rounded-sm placeholder:text-[12px] px-3 py-2"
+                        placeholder="Card Holder"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[#1A202C] font-medium mb-1">Expiration Date</label>
+                      <input
+                        type="text"
+                        name="expirationDate"
+                        value={formData.expirationDate}
+                        onChange={handleInputChange}
+                        className="w-full bg-white rounded-sm placeholder:text-[12px] px-3 py-2"
+                        placeholder="MM/YY"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[#1A202C] font-medium mb-1">CVC</label>
+                      <input
+                        type="text"
+                        name="cvc"
+                        value={formData.cvc}
+                        onChange={handleInputChange}
+                        className="w-full bg-white rounded-sm placeholder:text-[12px] px-3 py-2"
+                        placeholder="CVC"
                       />
                     </div>
                   </div>
-
-                  {/* Email and Address */}
-                  <div className="grid sm:grid-cols-2 gap-4 mt-4">
-                    <div>
-                      <label className="block text-[#1A202C] font-medium mb-1">
-                        Town
-                      </label>
-                      <input
-                        type="email"
-                        className="w-full bg-[#F5F5F5] rounded-sm  placeholder:text-[12px]   px-3 py-2"
-                        placeholder="Town"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[#1A202C] font-medium mb-1">
-                        City
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full bg-[#F5F5F5]  placeholder:text-[12px] px-3 py-2"
-                        placeholder="City"
-                      />
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </section>
-          </section>
-          {/* step 2 */}
-          <section>
-            <div className="bg-white lg:px-16 p-8 lg:w-[854px] w-full min-h-[336px] rounded-md ">
-              {/* Header */}
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900">
-                  Rental Info
-                </h2>
-                <p className="text-sm text-gray-500">
-                  Please select your rental date
-                </p>
-                <p className="text-right text-sm text-gray-400 font-medium">
-                  Step 2 of 4
-                </p>
+                )}
               </div>
 
-              {/* Pick-Up Section */}
-              <div className="mb-8">
-                <div className="flex items-center gap-2 mb-4">
+              {/* PayPal */}
+              <div className="flex justify-between bg-[#F6F7F9] w-full rounded-md my-5 px-3 py-2">
+                <span className="text-[#1A202C] font-semibold text-[17px] mb-2">
                   <input
                     type="radio"
-                    id="pick-up"
-                    name="rentalType"
-                    defaultChecked
-                    className="text-[#3563E9]  placeholder:text-[12px]  focus:ring-[#3563E9] "
-                  />
-                  <label
-                    htmlFor="pick-up"
-                    className="text-gray-900 font-medium"
-                  >
-                    Pick - Up
-                  </label>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Locations
-                    </label>
-                    <select className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9]  focus:border-[#3563E9] ">
-                      <option>Select your city</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Date
-                    </label>
-                    <select className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9]  focus:border-[#3563E9] ">
-                      <option>Select your date</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Time
-                    </label>
-                    <select className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9]  focus:border-[#3563E9] ">
-                      <option>Select your time</option>
-                    </select>
-                  </div>
-                </div>
+                    name="paymentMethod"
+                    value="paypal"
+                    checked={paymentMethod === "paypal"}
+                    onChange={() => handlePaymentMethodChange("paypal")}
+                  />{" "}
+                  PayPal
+                </span>
+                <span>
+                  <Image src="/PayPal.png" alt="PayPal" width={50} height={30} />
+                </span>
               </div>
 
-              {/* Drop-Off Section */}
-              <div>
-                <div className="flex items-center gap-2 mb-4">
+              {/* Bitcoin */}
+              <div className="flex justify-between bg-[#F6F7F9] w-full rounded-md my-4 px-3 py-2">
+                <span className="text-[#1A202C] font-semibold text-[17px] mb-2">
                   <input
                     type="radio"
-                    id="drop-off"
-                    name="rentalType"
-                    className="text-[#3563E9]  focus:ring-[#3563E9] "
-                  />
-                  <label
-                    htmlFor="drop-off"
-                    className="text-gray-900 font-medium"
-                  >
-                    Drop - Off
-                  </label>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Locations
-                    </label>
-                    <select className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9]  focus:border-[#3563E9] ">
-                      <option>Select your city</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Date
-                    </label>
-                    <select className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9]  focus:border-[#3563E9] ">
-                      <option>Select your date</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Time
-                    </label>
-                    <select className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9]  focus:border-[#3563E9] ">
-                      <option>Select your time</option>
-                    </select>
-                  </div>
-                </div>
+                    name="paymentMethod"
+                    value="bitcoin"
+                    checked={paymentMethod === "bitcoin"}
+                    onChange={() => handlePaymentMethodChange("bitcoin")}
+                  />{" "}
+                  Bitcoin
+                </span>
+                <span>
+                  <Image src="/Bitcoin.png" alt="Bitcoin" width={50} height={30} />
+                </span>
               </div>
-            </div>
-          </section>
-
-          {/* step 3  */}
-          <section className=" p-8 lg:px-16 lg:w-[854px] w-full min-h-[336px] bg-white  ">
-            {/* heading */}
-            <div className="flex justify-between ">
-              <div className="flex flex-col">
-                <h1 className="font-bold text-[20px] font-PlusJakartaSans text-[#1A202C] ">
-                  Payment Method
-                </h1>
-                <p className="text-[14px] text-[#90A3BF] ">
-                  Please enter your Payment Method
-                </p>
-              </div>
-              <button className=" text-[#90A3BF]  px-2 py-4 rounded-sm text-[14px]">
-                Step 3 of 4
+            </form>
+            <div className="flex justify-between mt-6">
+              <button
+                onClick={handlePrevious}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md"
+              >
+                Previous
+              </button>
+              <button
+                onClick={handleNext}
+                className="bg-[#3563E9] text-white px-4 py-2 rounded-md"
+              >
+                Next
               </button>
             </div>
-            {/* form */}
-            <section className="text-[14px] pt-4 bg ">
-              <div className="max-w-3xl mx-auto ">
-                <form>
-                  <div className="bg-[#F6F7F9] rounded-md p-3">
-                    {/* visa card */}
-                    <div className="flex justify-between ">
-                      <span className=" text-[#1A202C] font-semibold text-[17px] mb-5">
-                        <input type="radio" /> Credit Card
-                      </span>
-                      <span>
-                        <Image src={Visa} alt="" />
-                      </span>
-                    </div>
-                    {/*  Card Name and Card Holder */}
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-[#1A202C] font-medium mb-1">
-                          Card Name
-                        </label>
-                        <input
-                          type="text"
-                          className="w-full bg-white rounded-sm focus:outline-none focus:ring placeholder:text-[12px] px-6 py-2"
-                          placeholder=" Card Name"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[#1A202C] font-medium mb-1">
-                          Card Holder
-                        </label>
-                        <input
-                          type="text"
-                          className="w-full bg-white rounded-sm placeholder:text-[12px]   px-3 py-2"
-                          placeholder="Card Holder"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Expiration DAte  and CVC */}
-                    <div className="grid sm:grid-cols-2 gap-4 mt-4">
-                      <div>
-                        <label className="block text-[#1A202C] font-medium mb-1">
-                          Expiration Date
-                        </label>
-                        <input
-                          type="date"
-                          className="w-full bg-white rounded-sm  placeholder:text-[12px] placeholder:text-    px-3 py-2"
-                          placeholder="Expiration Date"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-[#1A202C] font-medium mb-1">
-                          CVC
-                        </label>
-                        <input
-                          type="text"
-                          className="w-full bg-white  placeholder:text-[12px] px-3 py-2"
-                          placeholder="CVC"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  {/* Paypal card */}
-                  <div className="flex justify-between bg-[#F6F7F9] w-full rounded-md my-5 px-3 py-2 ">
-                    <span className=" text-[#1A202C] font-semibold text-[17px] mb-2 ">
-                      <input type="radio" className="px-4" /> Pay Pal
-                    </span>
-                    <span>
-                      <Image src={PayPal} alt="" />
-                    </span>
-                  </div>
-                  {/* Bitcoin card */}
-                  <div className="flex justify-between  bg-[#F6F7F9]  w-full rounded-md my-4 px-3 py-2 ">
-                    <span className=" text-[#1A202C] font-semibold text-[17px] mb-2 ">
-                      <input type="radio" className="px-4" /> Bitcoin
-                    </span>
-                    <span>
-                      <Image src={Bitcoin} alt="" />
-                    </span>
-                  </div>
-                </form>
-              </div>
-            </section>
           </section>
+        )}
 
-          {/* step 4  */}
-          <section>
-          <div className="bg-white p-8  lg:px-16 lg:w-[854px] w-full min-h-[336px] rounded-lg ">
-      {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">Confirmation</h2>
-        <p className="text-sm text-gray-500">
-          We are getting to the end. Just a few clicks and your rental is ready!
-        </p>
-        <p className="text-right text-sm text-gray-400 font-medium">Step 4 of 4</p>
-      </div>
-
-      {/* Checkboxes */}
-      <div className="space-y-4 mb-6">
-        <div className="flex items-start gap-3">
-          <input
-            type="checkbox"
-            id="marketing"
-            className="h-5 w-5 text-[#3563E9]  border-gray-300 rounded focus:ring-[#3563E9] "
-          />
-          <label htmlFor="marketing" className="text-gray-700">
-            I agree with sending marketing and newsletter emails. No spam,
-            promised!
-          </label>
-        </div>
-        <div className="flex items-start gap-3">
-          <input
-            type="checkbox"
-            id="terms"
-            className="h-5 w-5 text-[#3563E9]  border-gray-300 rounded focus:ring-[#3563E9] "
-          />
-          <label htmlFor="terms" className="text-gray-700">
-            I agree with our terms and conditions and privacy policy.
-          </label>
-        </div>
-      </div>
-
-      {/* Button */}
-      <div className="mb-6">
-        <button className="w-[140px] h-[57px] bg-[#3563E9]  text-white font-semibold p-[20px] rounded-lg hover:bg-blue-700 transition">
-      <Link href={`/adminCarRent`}>Rent Now</Link>
-        </button>
-      </div>
-
-      {/* Security Note */}
-      <div className="flex flex-col items-start gap-4">
-        <div className="text-[#3563E9] ">
-          <Image src={ formicon} alt="img"/>
-        </div>
-        
-          <h3 className="text-gray-900 font-medium">All your data are safe</h3>
-          <p className="text-sm text-[#90A3BF] ">
-            We are using the most advanced security to provide you the best
-            experience ever.
-          </p>
-        
-      </div>
-    </div>
-          </section>
-        </main>
-
-        {/* side2 */}
-        <main>
-                <div className="bg-white p-6 rounded-md shadow-md max-w-full mx-auto">
-      {/* Header */}
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">Rental Summary</h2>
-        <p className="text-sm text-[#90A3BF]">
-          Prices may change depending on the length of the rental and the price
-          of your rental car.
-        </p>
-      </div>
-
-      {/* Car Details */}
-      <div className="flex items-center gap-4 mb-6">
-        <Image
-          src={formSummary}
-          alt="Car"
-          className="w-20 h-16 rounded-md object-cover"
-        />
-        <div>
-          <h3 className="text-gray-900 font-medium">Nissan GT - R</h3>
-          <div className="flex items-center gap-1">
-            <div className="flex text-yellow-400">
-              {[...Array(4)].map((_, i) => (
-                <svg
-                  key={i}
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  className="w-4 h-4"
-                >
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                </svg>
-              ))}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="w-4 h-4 text-gray-300"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                />
-              </svg>
+        {/* Step 4: Confirmation */}
+        {currentStep === 4 && (
+          <section className="bg-white p-8 lg:px-16 lg:w-[854px] w-full min-h-[336px] rounded-lg">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">Confirmation</h2>
+              <p className="text-sm text-gray-500">
+                We are getting to the end. Just a few clicks and your rental is ready!
+              </p>
+              <p className="text-right text-sm text-gray-400 font-medium">Step 4 of 4</p>
             </div>
-            <p className="text-sm text-gray-500">440+ Reviewer</p>
-          </div>
-        </div>
-      </div>
+            <form>
+              {/* Checkboxes */}
+              <div className="space-y-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    name="marketingEmails"
+                    checked={formData.marketingEmails}
+                    onChange={handleInputChange}
+                    className="mt-1 text-[#3563E9] focus:ring-[#3563E9]"
+                  />
+                  <label htmlFor="marketingEmails" className="text-sm text-gray-700">
+                    I agree to receive marketing emails from the brand.
+                  </label>
+                </div>
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    name="termsAgreed"
+                    checked={formData.termsAgreed}
+                    onChange={handleInputChange}
+                    className="mt-1 text-[#3563E9] focus:ring-[#3563E9]"
+                  />
+                  <label htmlFor="termsAgreed" className="text-sm text-gray-700">
+                    I agree to the terms and conditions.
+                  </label>
+                </div>
+              </div>
 
-      {/* Price Breakdown */}
-      <div className="border-t pt-4 space-y-4">
-        <div className="flex justify-between">
-          <p className="text-gray-500">Subtotal</p>
-          <p className="text-gray-900 font-medium">$80.00</p>
-        </div>
-        <div className="flex justify-between">
-          <p className="text-gray-500">Tax</p>
-          <p className="text-gray-900 font-medium">$0</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Apply promo code"
-            className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-          />
-          <button className=" text-black text-sm px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-            Apply now
-          </button>
-        </div>
-      </div>
+              {/* Rent Now Button */}
+              <button
+                type="button"
+                onClick={handleCheckout}
+                className="w-full bg-[#3563E9] text-white py-3 rounded-md hover:bg-[#2a4fbb] transition-colors"
+              >
+                Rent Now
+              </button>
+            </form>
+            <div className="flex justify-between mt-6">
+              <button
+                onClick={handlePrevious}
+                className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md"
+              >
+                Previous
+              </button>
+            </div>
+          </section>
+        )}
+      </main>
 
-      {/* Total Price */}
-      <div className="border-t pt-4 mt-4">
-        <div className="flex justify-between items-center">
-          <p className="text-gray-500">Total Rental Price</p>
-          <p className="text-2xl font-bold text-gray-900">$80.00</p>
-        </div>
-        <p className="text-sm text-gray-400">
-          Overall price and includes rental discount
+      {/* Side 2: Rental Summary */}
+      <aside className="lg:w-[426px] w-full h-fit bg-white rounded-md p-6">
+        <h2 className="text-2xl font-semibold text-blue-600 mb-6">MORENT - Rental Policy</h2>
+        <p className="text-sm text-gray-500 mb-6">
+          Prices may change depending on the length of the rental and the price of your rental car.
         </p>
-      </div>
-    </div>
-        </main>
-      </div>
+        <div className="rental-policy space-y-4 text-gray-700">
+          <ul className="list-disc pl-5">
+            <li>Return the vehicle in the same condition and comply with all traffic laws.</li>
+            <li>Maintain valid insurance and accept liability for any damages or incidents.</li>
+            <li>Payments, including a security deposit, must be completed per agreed terms.</li>
+            <li>Cancellations follow refund guidelines; late returns may incur extra fees.</li>
+          </ul>
+        </div>
+      </aside>
+
+      {/* Success Modal */}
+      <SuccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };
