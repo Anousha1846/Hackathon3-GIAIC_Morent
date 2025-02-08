@@ -1,101 +1,113 @@
-Morent Hackathon Website
-🚀 A visually stunning and user-centric web application developed during a hackathon. This project demonstrates advanced UI/UX design principles, focusing on creating an intuitive, modern, and responsive user interface.
+# MORENT - Car Rentals
 
-🚩 Key Features:
-🌟 Modern Design: Sleek and cohesive UI/UX with attention to usability and accessibility.
-📱 Fully Responsive: Optimized for all devices to ensure seamless user experience.
-⚡ Performance-Driven: Leveraging cutting-edge tools and frameworks for fast and scalable performance.
-💻 Tech Stack
-Next.js: React-based framework for server-side rendering and static site generation.
-Tailwind CSS: Utility-first CSS framework for rapid styling.
-DaisyUI: Tailwind plugin for beautiful component styling.
-ShadCN: A collection of high-quality components for React applications.
-Acentity: For enhanced animations and interactivity.
+## 🚗 About MORENT
+MORENT is an advanced car rental platform designed to provide users with a seamless experience for renting vehicles. The website offers a user-friendly interface, efficient booking system, and a powerful admin dashboard for order management. Built using **Next.js 14, TypeScript, Sanity CMS**, and **Tailwind CSS**, it ensures high performance, responsiveness, and an interactive user experience.
 
+## ✨ Features
+- **Car Rental Booking System** – Rent cars quickly with an intuitive UI.
+- **Admin Dashboard** – Manage orders, analytics, and user interactions.
+- **User Authentication** – Secure login and sign-in using Oauth.
+- **Dynamic Pages** – Fetch and display data dynamically from Sanity CMS.
+- **Optimized UI/UX** – Modern, minimal, and professional design.
+- **Mobile Responsive** – Fully adaptable across all screen sizes.
 
-📂 Folder Structure
-csharp
-Copy code
-📦 morent-hackathon  
-├── 📁 public          # Static assets  
-├── 📁 src             # Source code  
-│   ├── 📁 components  # Reusable UI components  
-│   ├── 📁 pages       # Next.js pages  
-│   ├── 📁 styles      # Global styles  
-│   └── 📁 utils       # Utility functions  
-└── README.md          # Project documentation  
-🚀 Getting Started
-Follow these steps to run the project locally:
+## 📁 Project Structure
+The project follows a well-organized folder structure for better scalability and maintainability.
 
-1. Clone the Repository
-bash
-Copy code
-git clone https://github.com/yourusername/morent-hackathon.git  
-cd morent-hackathon  
-2. Install Dependencies
-bash
-Copy code
-npm install  
-3. Start the Development Server
-bash
-Copy code
-npm run dev  
-Open http://localhost:3000 in your browser to view the project.
+```
+src/
+│── app/
+│   ├── adminCarRent/
+│   │   ├── api/
+│   │   ├── categories/
+│   │   ├── detailCarRent/[id]/
+│   │   ├── FAQs/
+│   │   ├── lisence/
+│   │   ├── payment/
+│   │   ├── studio/
+│   │   ├── userprofile/
+│   │   ├── wishlist/
+│   │
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│
+│── components/
+│   ├── custom/
+│   │   ├── Reusable/
+│   │   │   ├── BillingInfo.tsx
+│   │   │   ├── CategoriesMain.tsx
+│   │   │   ├── CategoriesSidebar.tsx
+│   │   │   ├── ClientProvider.tsx
+│   │   │   ├── CommentSection.tsx
+│   │   │   ├── DashboardLayout.tsx
+│   │   │   ├── DetailHero.tsx
+│   │   │   ├── FloatingButton.tsx
+│   │   │   ├── Hero.tsx
+│   │   │   ├── HeroCardsSkeleton.tsx
+│   │   │   ├── Lisence.tsx
+│   │   │   ├── Location.tsx
+│   │   │   ├── PopularCars.tsx
+│   │   │   ├── RecommendedCars.tsx
+│   │   │   ├── RentalDetails.tsx
+│   │   │   ├── RentalSummary.tsx
+│   │   │   ├── Reviews.tsx
+│   │   │   ├── SidebarAdmin.tsx
+│   │   │   ├── TopCarRental.tsx
+│   │
+│   ├── layouts/
+│   │   ├── Footer.tsx
+│   │   ├── Header.tsx
+│   │   ├── SearchBar.tsx
+│
+│── contexts/
+│── lib/
+│── sanity/
+│── middleware.ts
+│── .env.local
+│── .eslintrc.json
+│── .gitignore
+```
 
+## 🛠️ Tech Stack
+- **Frontend**: Next.js 14, TypeScript, Tailwind CSS
+- **Backend**: Sanity CMS, API Routes
+- **Authentication**:  OAuth
+- **State Management**: React Context API
+- **Data Fetching**: Server-Side Rendering (SSR), Static Site Generation (SSG), Client Side Rendering (CSR)
 
-Here’s a professional and interactive README.md file tailored for your UI/UX Hackathon - Morent Website project:
+## 🚀 Getting Started
 
-Morent Hackathon Website
-🚀 A visually stunning and user-centric web application developed during a hackathon. This project demonstrates advanced UI/UX design principles, focusing on creating an intuitive, modern, and responsive user interface.
+### 1️⃣ Clone the Repository
+```sh
+git clone https://github.com/Anousha1846/Hackathon3-GIAIC_Morent.git
 
-🚩 Key Features
-🌟 Modern Design: Sleek and cohesive UI/UX with attention to usability and accessibility.
-📱 Fully Responsive: Optimized for all devices to ensure seamless user experience.
-⚡ Performance-Driven: Leveraging cutting-edge tools and frameworks for fast and scalable performance.
-💻 Tech Stack
-Next.js: React-based framework for server-side rendering and static site generation.
-Tailwind CSS: Utility-first CSS framework for rapid styling.
-DaisyUI: Tailwind plugin for beautiful component styling.
-ShadCN: A collection of high-quality components for React applications.
-Acentity: For enhanced animations and interactivity.
-📸 Screenshots
-(Include relevant screenshots here to showcase the design and functionality of your project.)
+```
 
-📂 Folder Structure
-csharp
-Copy code
-📦 morent-hackathon  
-├── 📁 public          # Static assets  
-├── 📁 src             # Source code  
-│   ├── 📁 components  # Reusable UI components  
-│   ├── 📁 pages       # Next.js pages  
-│   ├── 📁 styles      # Global styles  
-│   └── 📁 utils       # Utility functions  
-└── README.md          # Project documentation  
-🚀 Getting Started
-Follow these steps to run the project locally:
+### 2️⃣ Install Dependencies
+```sh
+yarn install  # or npm install
+```
 
-1. Clone the Repository
-bash
-Copy code
-git clone https://github.com/yourusername/morent-hackathon.git  
-cd morent-hackathon  
-2. Install Dependencies
-bash
-Copy code
-npm install  
-3. Start the Development Server
-bash
-Copy code
-npm run dev  
-Open http://localhost:3000 in your browser to view the project.
+### 3️⃣ Set Up Environment Variables
+Create a `.env.local` file and configure your API keys, Sanity credentials, and authentication settings.
 
-🤝 Contribution
-Contributions, issues, and feature requests are welcome! Feel free to check the issues page.
+### 4️⃣ Run the Development Server
+```sh
+yarn dev  # or npm run dev
+```
+The app will be available at `http://localhost:3000`.
 
-📜 License
-This project is licensed under the MIT License.
+### 5️⃣ Build for Production
+```sh
+yarn build  # or npm run build
+yarn start  # or npm run start
+```
 
-🎯 Acknowledgements
-Special thanks to the GIAIC Faculty and the amazing developers behind the tools used in this project.
+## 🎯 Contribution Guidelines
+We welcome contributions! If you find any bugs or want to enhance features, feel free to fork the repo, create a branch, and submit a PR.
+
+---
+✨ **Developed with passion by [Anousha Asadullah]** ✨
 
