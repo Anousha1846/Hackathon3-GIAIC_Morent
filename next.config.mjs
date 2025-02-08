@@ -16,6 +16,7 @@ const nextConfig = {
       GITHUB_ID: process.env.GITHUB_ID,
       GITHUB_SECRET: process.env.GITHUB_SECRET,
       NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+      SANITY_API_TOKEN: process.env.SANITY_API_TOKEN,
     },
   };
   

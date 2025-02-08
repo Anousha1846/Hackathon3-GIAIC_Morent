@@ -5,10 +5,9 @@ import profile2 from "../../../public/profile2.png";
 
 const Reviews = () => {
   return (
-    <div className="lg:px-16 lg:py-8  py-4 px-6 lg:mx-12 mx-4 bg-white ">
+    <div className="lg:px-16 lg:py-8  py-4 px-6 lg:mx-16 mx-4 bg-white ">
       <h1 className="font-semibold pb-3 text-[20px] leading-[25.2px] text-[#1A202C] ">
-        Reviews{" "}
-        <span className="bg-[#3563E9] px-1 text-white font-mono">13</span>{" "}
+        Reviews  <span className="bg-[#3563E9] px-1 text-white font-mono"> 13</span>{" "}
       </h1>
       {/* review */}
       <div className="w-full space-y-6">

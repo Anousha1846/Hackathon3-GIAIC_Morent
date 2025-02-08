@@ -3,6 +3,7 @@ import DetailHero from "@/components/custum/DetailHero";
 import Reviews from "@/components/custum/Reviews";
 import PopularCar from "@/components/custum/PopularCar";
 import Link from "next/link";
+import CommentSection from "@/components/custum/CommentSection";
 
 interface Params {
   params: {
@@ -35,6 +36,9 @@ const CarDetailPage = async ({ params }: {params: {id:string}}) => {
   return (
     <main className="h-full w-full bg-[#F6F7F9]">
       <DetailHero carDetail={carDetail} />
+      
+      {/* comment section */}
+     <CommentSection/>
       <Reviews />
       <PopularCar />
       <div className="flex justify-center align-middle my-16 pb-16">

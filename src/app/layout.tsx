@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "../components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
@@ -8,7 +8,7 @@ import ClientProvider from "@/components/custum/ClientProvider";
 import { WishlistProvider } from '../contexts/WishlistContext';
 
 
-const inter = Inter({ subsets: ["latin"] });
+const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-plusjakarta" });
 
 export const metadata: Metadata = {
   title: "UI/UX Hackathon",
@@ -22,8 +22,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-    <body className={inter.className}>
-  <WishlistProvider> 
+<body className={plusJakartaSans.variable}>
+<WishlistProvider> 
     <ClientProvider> 
       <Header />
       {children}

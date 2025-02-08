@@ -23,11 +23,17 @@ type CarCardProps = {
 const CarCard: React.FC<CarCardProps> = ({ car, heartColor = "white", onRentNow }) => {
   const [isHeartRed, setIsHeartRed] = useState(heartColor === "red");
   const { toggleWishlist } = useWishlist(); // Use the toggleWishlist function from context
-
+ 
+ //wishlist
   const handleHeartClick = () => {
     toggleWishlist(car); // Add or remove from the wishlist
     setIsHeartRed((prev) => !prev); // Toggle the heart color
+  
+    if (!isHeartRed) {
+      alert("Your selected car is added to your wishlist");
+    }
   };
+  
 
   const handleRentNow = () => {
     if (onRentNow) {

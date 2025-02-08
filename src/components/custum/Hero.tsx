@@ -6,6 +6,7 @@ import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import HeroCardsSkeleton from "./HeroCardsSkeleton";
 import Head from "next/head"; // Import Head for font preloading
+import Link from "next/link";
 
 // Define the types for the fetched data
 interface Card {
@@ -53,7 +54,7 @@ const Hero = () => {
     <>
 
       <div className="pt-6">
-        <main className="px-4 flex gap-8 mx-auto justify-center">
+        <main className="sm:px-4 px-2 flex gap-8 mx-auto justify-center">
         {/* // First Card */}
 <div className="md:max-w-[620px] max-w-[500px] max-h-[400px] rounded-[10px]">
   <div className="bg-[#54A6FF] p-8 rounded-lg text-white flex flex-col items-center lg:justify-between relative overflow-hidden max-w-3xl mx-auto">
@@ -64,9 +65,10 @@ const Hero = () => {
       <p className="mt-3 text-[16px] leading-[24px] font-medium h-[48px]">
         {data.card1.paragraph}
       </p>
-      <button className="mt-2 px-6 py-3 hover:text-[#54A6FF] text-white bg-[#3563E9] rounded-sm font-semibold shadow-md leading-6 text-center hover:bg-gray-100 transition">
+      <Link href="/Categories"><button className="mt-2 px-6 py-3 hover:text-[#54A6FF] text-white bg-[#3563E9] rounded-sm font-semibold shadow-md leading-6 text-center hover:bg-gray-100 transition">
         {data.card1.buttonText}
       </button>
+      </Link>
     </div>
     <div className="flex-1 mt-8 lg:mt-0">
       <Image
@@ -91,9 +93,10 @@ const Hero = () => {
       <p className="mt-3 text-[16px] leading-[24px] font-medium h-[48px]">
         {data.card2.paragraph}
       </p>
-      <button className="mt-2 px-6 py-3 text-white bg-[#54A6FF] hover:text-[#54A6FF] rounded-sm font-semibold shadow-md leading-6 text-center hover:bg-gray-100 transition">
+      <Link href="/Categories"><button className="mt-2 px-6 py-3 text-white bg-[#54A6FF] hover:text-[#54A6FF] rounded-sm font-semibold shadow-md leading-6 text-center hover:bg-gray-100 transition">
         {data.card2.buttonText}
       </button>
+      </Link> 
     </div>
     <div className="flex-1 mt-8 lg:mt-0">
       <Image

@@ -1,8 +1,11 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import SuccessModal from "./Resuable/SuccessMsg";
+import { client } from "@/sanity/lib/client";
+import RentalSummary from "./RentalSummary";
 
 const BillingInfo = () => {
   const searchParams = useSearchParams();
@@ -29,6 +32,12 @@ const BillingInfo = () => {
     cvc: "",
     marketingEmails: false,
     termsAgreed: false,
+    carDetails: {
+      _type: "carDetails", // Ensure this type exists in your schema
+      name: carDetails.name,
+      price: carDetails.price,
+      image: carDetails.image,
+    },
   });
   const [paymentMethod, setPaymentMethod] = useState("");
   const [currentStep, setCurrentStep] = useState(1); // Track current step
@@ -38,9 +47,10 @@ const BillingInfo = () => {
     const name = searchParams.get("name");
     const price = searchParams.get("price");
     const image = searchParams.get("image");
-
+  
     if (name && price && image) {
       setCarDetails({ name, price, image });
+      console.log("Car Details Set:", { name, price, image }); // Log the car details
     }
   }, [searchParams]);
 
@@ -80,15 +90,15 @@ const BillingInfo = () => {
         }
         return true;
 
-        case 2: // Rental Info
+      case 2: // Rental Info
         const { pickupLocation, pickupDate, pickupTime, dropoffLocation, dropoffDate, dropoffTime } = formData;
-      
+
         if (!pickupLocation || !pickupDate || !pickupTime || !dropoffLocation || !dropoffDate || !dropoffTime) {
           alert("Please fill all rental information fields.");
           return false;
         }
-      
-        // Additional validation for date and time (if needed)
+
+        // Additional validation for date and time
         const currentDate = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
         if (pickupDate < currentDate) {
           alert("Pick-up date cannot be in the past.");
@@ -98,7 +108,7 @@ const BillingInfo = () => {
           alert("Drop-off date cannot be before the pick-up date.");
           return false;
         }
-      
+
         return true;
 
       case 3: // Payment Method
@@ -155,16 +165,58 @@ const BillingInfo = () => {
     setCurrentStep((prev) => prev - 1);
   };
 
-  // Handle form submission
-  const handleCheckout = () => {
+  // Format date to YYYY-MM-DD for Sanity
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
+  };
+
+  // Handle checkout
+  const handleCheckout = async () => {
     if (validateStep(currentStep)) {
       setIsModalOpen(true); // Show the success modal
-      console.log("Form Data:", { ...formData, paymentMethod, carDetails }); // Log all data
+
+      // Prepare order data
+      const orderData = {
+        _type: "order",
+        customerName: formData.name,
+        phoneNumber: formData.phoneNumber,
+        town: formData.town,
+        city: formData.city,
+        pickupLocation: formData.pickupLocation,
+        pickupDate: formatDate(formData.pickupDate),
+        pickupTime: formData.pickupTime,
+        dropoffLocation: formData.dropoffLocation,
+        dropoffDate: formatDate(formData.dropoffDate),
+        dropoffTime: formData.dropoffTime,
+        paymentMethod: paymentMethod,
+        carDetails: {
+          _type: "carDetails",
+          name: carDetails.name,
+          price: carDetails.price,
+          image: carDetails.image,
+        },
+      };
+      
+      console.log("Order Data:", orderData); // Log the order data
+      try {
+        const response = await client.create(orderData);
+        console.log("Sanity Response:", response); // Log the response from Sanity
+        localStorage.removeItem("applied discount");
+      } catch (error) {
+        console.error("Error saving order:", error);
+      }
     }
   };
 
+  // Rental Summary Data
+  const carImage = searchParams.get("carImage") || "";
+  const carName = searchParams.get("carName") || "";
+  const priceString = searchParams.get("price") || "0";
+  const price = parseFloat(priceString);
+
   return (
-    <div className="bg-[#F6F7F9] flex md:flex-row flex-col-reverse gap-7 lg:px-16 px-2 py-8">
+    <div className="bg-[#F6F7F9] flex md:flex-row flex-col-reverse gap-5 lg:px-16 px-2 py-8">
       {/* Side 1: Form */}
       <main className="flex flex-col gap-4">
         {/* Step 1: Billing Info */}
@@ -229,7 +281,7 @@ const BillingInfo = () => {
               <button
                 onClick={handlePrevious}
                 disabled={currentStep === 1}
-                className="bg-gray-300 hover:bg-blue-700 hover:text-black text-gray-700 px-4 py-2 rounded-md disabled:opacity-50 "
+                className="bg-gray-300 hover:bg-blue-700 hover:text-black text-gray-700 px-4 py-2 rounded-md disabled:opacity-50"
               >
                 Previous
               </button>
@@ -252,108 +304,108 @@ const BillingInfo = () => {
               <p className="text-right text-sm text-gray-400 font-medium">Step 2 of 4</p>
             </div>
             <form>
-          {/* Pick-Up Section */}
-<div className="mb-8">
-  <div className="flex items-center gap-2 mb-4">
-    <input
-      type="radio"
-      id="pick-up"
-      name="rentalType"
-      defaultChecked
-      className="text-[#3563E9] focus:ring-[#3563E9]"
-    />
-    <label htmlFor="pick-up" className="text-gray-900 font-medium">
-      Pick - Up
-    </label>
-  </div>
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {/* Location */}
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-      <input
-        type="text"
-        name="pickupLocation"
-        value={formData.pickupLocation}
-        onChange={handleInputChange}
-        className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
-        placeholder="Enter your location"
-      />
-    </div>
-    {/* Date */}
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
-      <input
-        type="date"
-        name="pickupDate"
-        value={formData.pickupDate}
-        onChange={handleInputChange}
-        className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
-      />
-    </div>
-    {/* Time */}
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
-      <input
-        type="time"
-        name="pickupTime"
-        value={formData.pickupTime}
-        onChange={handleInputChange}
-        className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
-      />
-    </div>
-  </div>
-</div>
+              {/* Pick-Up Section */}
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <input
+                    type="radio"
+                    id="pick-up"
+                    name="rentalType"
+                    defaultChecked
+                    className="text-[#3563E9] focus:ring-[#3563E9]"
+                  />
+                  <label htmlFor="pick-up" className="text-gray-900 font-medium">
+                    Pick - Up
+                  </label>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Location */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                    <input
+                      type="text"
+                      name="pickupLocation"
+                      value={formData.pickupLocation}
+                      onChange={handleInputChange}
+                      className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
+                      placeholder="Enter your location"
+                    />
+                  </div>
+                  {/* Date */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                    <input
+                      type="date"
+                      name="pickupDate"
+                      value={formData.pickupDate}
+                      onChange={handleInputChange}
+                      className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
+                    />
+                  </div>
+                  {/* Time */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                    <input
+                      type="time"
+                      name="pickupTime"
+                      value={formData.pickupTime}
+                      onChange={handleInputChange}
+                      className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
+                    />
+                  </div>
+                </div>
+              </div>
 
-{/* Drop-Off Section */}
-<div>
-  <div className="flex items-center gap-2 mb-4">
-    <input
-      type="radio"
-      id="drop-off"
-      name="rentalType"
-      className="text-[#3563E9] focus:ring-[#3563E9]"
-    />
-    <label htmlFor="drop-off" className="text-gray-900 font-medium">
-      Drop - Off
-    </label>
-  </div>
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {/* Location */}
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
-      <input
-        type="text"
-        name="dropoffLocation"
-        value={formData.dropoffLocation}
-        onChange={handleInputChange}
-        className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
-        placeholder="Enter your location"
-      />
-    </div>
-    {/* Date */}
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
-      <input
-        type="date"
-        name="dropoffDate"
-        value={formData.dropoffDate}
-        onChange={handleInputChange}
-        className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
-      />
-    </div>
-    {/* Time */}
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
-      <input
-        type="time"
-        name="dropoffTime"
-        value={formData.dropoffTime}
-        onChange={handleInputChange}
-        className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
-      />
-    </div>
-  </div>
-</div>
+              {/* Drop-Off Section */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <input
+                    type="radio"
+                    id="drop-off"
+                    name="rentalType"
+                    className="text-[#3563E9] focus:ring-[#3563E9]"
+                  />
+                  <label htmlFor="drop-off" className="text-gray-900 font-medium">
+                    Drop - Off
+                  </label>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Location */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                    <input
+                      type="text"
+                      name="dropoffLocation"
+                      value={formData.dropoffLocation}
+                      onChange={handleInputChange}
+                      className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
+                      placeholder="Enter your location"
+                    />
+                  </div>
+                  {/* Date */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                    <input
+                      type="date"
+                      name="dropoffDate"
+                      value={formData.dropoffDate}
+                      onChange={handleInputChange}
+                      className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
+                    />
+                  </div>
+                  {/* Time */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                    <input
+                      type="time"
+                      name="dropoffTime"
+                      value={formData.dropoffTime}
+                      onChange={handleInputChange}
+                      className="w-full border rounded-lg py-2 px-3 text-gray-500 bg-gray-100 focus:ring-[#3563E9] focus:border-[#3563E9]"
+                    />
+                  </div>
+                </div>
+              </div>
             </form>
             <div className="flex justify-between mt-6">
               <button
@@ -562,20 +614,13 @@ const BillingInfo = () => {
       </main>
 
       {/* Side 2: Rental Summary */}
-      <aside className="lg:w-[426px] w-full h-fit bg-white rounded-md p-6">
-        <h2 className="text-2xl font-semibold text-blue-600 mb-6">MORENT - Rental Policy</h2>
-        <p className="text-sm text-gray-500 mb-6">
-          Prices may change depending on the length of the rental and the price of your rental car.
-        </p>
-        <div className="rental-policy space-y-4 text-gray-700">
-          <ul className="list-disc pl-5">
-            <li>Return the vehicle in the same condition and comply with all traffic laws.</li>
-            <li>Maintain valid insurance and accept liability for any damages or incidents.</li>
-            <li>Payments, including a security deposit, must be completed per agreed terms.</li>
-            <li>Cancellations follow refund guidelines; late returns may incur extra fees.</li>
-          </ul>
-        </div>
-      </aside>
+      <main>
+        <RentalSummary
+          carImage={carImage}
+          carName={carName}
+          price={price} // Ensure valid number
+        />
+      </main>
 
       {/* Success Modal */}
       <SuccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
