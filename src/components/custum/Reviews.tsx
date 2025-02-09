@@ -44,7 +44,7 @@ const Reviews = () => {
             </div>
             {/* Comment */}
             <p className="text-[#596780] text-sm mt-4">
-              We are very happy with the service from the MORENT App. Morent has
+              We are very happy with the service from the EliteWheels  App. EliteWheels  has
               a low price and also a large variety of cars with good and
               comfortable facilities. In addition, the service provided by the
               officers is also very friendly and very polite.

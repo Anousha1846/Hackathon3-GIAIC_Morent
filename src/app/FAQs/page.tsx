@@ -4,12 +4,12 @@ import { useState } from "react";
 
 const faqs = [
   {
-    question: "How do I book a car on Morent?",
+    question: "How do I book a car on EliteWheels ?",
     answer:
       "To book a car, browse available listings, select a vehicle, choose your rental duration, and proceed with the checkout process.",
   },
   {
-    question: "What payment methods does Morent accept?",
+    question: "What payment methods does EliteWheels  accept?",
     answer:
       "We accept payments via credit/debit cards, PayPal, and select cryptocurrency options for secure transactions.",
   },
@@ -46,7 +46,7 @@ const faqs = [
   {
     question: "What happens if the car breaks down?",
     answer:
-      "Morent provides 24/7 roadside assistance. Contact support immediately, and we will arrange help.",
+      "EliteWheels  provides 24/7 roadside assistance. Contact support immediately, and we will arrange help.",
   },
   {
     question: "Can I add an additional driver to my rental?",

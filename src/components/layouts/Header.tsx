@@ -55,7 +55,7 @@ const Header = () => {
         <div className="hidden h-[81px] md:grid md:grid-cols-[20%_55%_25%]">
           {/* Logo */}
           <h1 className="font-bold text-[25px] leading-[48px] text-[#3563E9] mx-auto mt-5">
-            <Link href="/">MORENT</Link>
+            <Link href="/">EliteWheels </Link>
           </h1>
           
           {/* Search Bar */}
@@ -97,19 +97,19 @@ const Header = () => {
               {/* wishlist */}
               <span className="mt-2 hover:scale-110 transition">
                 <Link href="/wishlist">
-                  <FaHeart size={26} />
+                  <FaHeart size={26} className="text-red-500" />
                 </Link>
               </span>
               {/* admin dashboard */}
               <span className="mt-2 hover:scale-110 transition">
                 <Link href="https://morent-admin-dashboard-wine.vercel.app/">
-                  <GrUserAdmin size={26} />
+                  <GrUserAdmin size={26} className="text-gray-600" />
                 </Link>
               </span>
               {/* FAQs */}
               <span className="mt-2 hover:scale-110 transition">
                 <Link href="/FAQs">
-                  <FaQuestionCircle size={26} />
+                  <FaQuestionCircle size={26} className="text-gray-600" />
                 </Link>
               </span>
               {/* <span className="mt-1">
@@ -132,7 +132,7 @@ const Header = () => {
           <div className="flex justify-between">
             {/* Logo */}
             <h1 className="font-extrabold text-[20px] text-[#3563E9] mt-7">
-              <Link href="/">MORENT</Link>
+              <Link href="/">EliteWheels </Link>
             </h1>
             
             {/* Navigation Icons */}
@@ -141,19 +141,19 @@ const Header = () => {
                 {/* wishlist */}
               <span className="mt-2 hover:scale-110 transition">
                   <Link href="/wishlist">
-                    <FaHeart size={22} />
+                    <FaHeart size={22} className="text-red-500" />
                   </Link>
                 </span>
                 {/* admin */}
                 <span className="mt-2 hover:scale-110 transition">
                   <Link href="https://morent-admin-dashboard-wine.vercel.app/">
-                    <GrUserAdmin size={22} />
+                    <GrUserAdmin size={22} className="text-gray-600" />
                   </Link>
                 </span>
                 {/* FAQs */}
                 <span className="mt-2 hover:scale-110 transition">
                   <Link href="/FAQs">
-                    <FaQuestionCircle size={22} />
+                    <FaQuestionCircle size={22} className="text-gray-600" />
                   </Link>
                 </span>
                 {/* <span className="mt-1">

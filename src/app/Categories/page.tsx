@@ -19,7 +19,7 @@ export default function Hero() {
           <div>
             <section className="p-1">
               <h2 className="text-2xl md:text-3xl font-bold text-blue-700 mb-6 text-center">
-                Morent Usage Policy
+                EliteWheels  Usage Policy
               </h2>
               <ul className="space-y-4 text-gray-800 leading-relaxed">
                 <li>
@@ -32,14 +32,14 @@ export default function Hero() {
                   <span className="font-semibold">3. Vehicle Responsibility:</span> Handle rented vehicles responsibly; damages or negligence may incur additional fees.
                 </li>
                 <li>
-                  <span className="font-semibold">4. Data Protection:</span> Morent safeguards your personal information in line with our privacy standards.
+                  <span className="font-semibold">4. Data Protection:</span> EliteWheels  safeguards your personal information in line with our privacy standards.
                 </li>
                 <li>
                   <span className="font-semibold">5. Timely Returns:</span> Late vehicle returns may result in additional charges as per rental terms.
                 </li>
               </ul>
               <p className="mt-6 text-center text-gray-700 font-medium">
-                Thank you for choosing <span className="text-blue-600 font-bold">MORENT</span> for reliable and seamless car rentals.
+                Thank you for choosing <span className="text-blue-600 font-bold">EliteWheels </span> for reliable and seamless car rentals.
               </p>
             </section>
           </div>
